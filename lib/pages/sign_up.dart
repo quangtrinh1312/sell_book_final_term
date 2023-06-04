@@ -13,8 +13,10 @@ class SignUpPage extends StatefulWidget {
 class _SignUpPageState extends State<SignUpPage> {
   TextEditingController usernameController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
+  TextEditingController rePasswordController = TextEditingController();
   String userNameMess = 'Enter username';
   String passWordMess = 'Password';
+  String rePassWordMess = 'Re password';
 
 
   @override
@@ -63,10 +65,30 @@ class _SignUpPageState extends State<SignUpPage> {
                     Spacer(),
                   ],
                 ),
+                
                 TextFieldCustom(
                   controller: passwordController,
                   icon: const Icon(Icons.ac_unit),
                   hintText: passWordMess,
+                  isPassWord: true,
+                ),
+                const SizedBox(
+                  height: 15.0,
+                ),
+                const Row(
+                  children: [
+                    Text(
+                      'Re password',
+                      style: TextStyle(color: Colors.blue),
+                    ),
+                    Spacer(),
+                  ],
+                ),
+                
+                TextFieldCustom(
+                  controller: rePasswordController,
+                  icon: const Icon(Icons.ac_unit),
+                  hintText: rePassWordMess,
                   isPassWord: true,
                 ),
                 const SizedBox(
@@ -80,8 +102,16 @@ class _SignUpPageState extends State<SignUpPage> {
                           content: Text('Please input user name'));
                       ScaffoldMessenger.of(context).showSnackBar(snackBar);
                     }
-                    if (passwordController.text.isEmpty) {
+                    else if (passwordController.text.isEmpty) {
                       passWordMess = 'please input password';
+                    }
+                    else if(rePasswordController.text.isEmpty){
+                      rePassWordMess = 'please input re password';
+                    }
+                    else if (passwordController.text != rePasswordController.text) {
+                      SnackBar snackBar = const SnackBar(
+                          content: Text('Password and re password not match'));
+                      ScaffoldMessenger.of(context).showSnackBar(snackBar);
                     } else {
                       bool isExist = false;
                       for (int i = 0; i < widget.accounts.length; i++) {

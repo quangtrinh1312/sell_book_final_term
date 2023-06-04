@@ -12,6 +12,7 @@ class Customer {
   double? price;
   double? total;
   bool? isVIP;
+
   Map<String, dynamic> toJson() {
     return {
       'name': name,
@@ -32,7 +33,7 @@ class Customer {
 }
 
 final customerInitList = [
-  Customer(name: 'Truyen', quantity: 8, price: 10000.0, isVIP: true),
-  Customer(name: 'Trinh', quantity: 9, price: 10000.0),
-  Customer(name: 'Dung', quantity: 999, price: 10000.0, isVIP: true),
+  Customer(name: 'Truyen', quantity: 0, price: 0.0, isVIP: true),
+  Customer(name: 'Trinh', quantity: 0, price: 0.0),
+  Customer(name: 'Dung', quantity: 0, price: 0.0, isVIP: true),
 ];

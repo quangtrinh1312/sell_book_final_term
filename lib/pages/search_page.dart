@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:sell_book_final_term/services/local/shared_prefs_splash.dart';
+import '../models/splash.dart';
 import '../pages/login_page.dart';
 import '../services/local/shared_prefs.dart';
 import '../components/custom_text_field.dart';
@@ -15,8 +17,11 @@ class SearchPage extends StatefulWidget {
 
 class _SearchPageState extends State<SearchPage> {
   TextEditingController nameSearchController = TextEditingController();
+  bool isRemoved = false;
   List<Customer> _searchList = [];
-  final SharedPrefs _sharedPrefs =  SharedPrefs();
+  final SharedPrefs _sharedPrefs = SharedPrefs();
+  final SharedPrefsSplash _sharedPrefsSplash = SharedPrefsSplash();
+  List<Splash> _isLogedList = [];
   @override
   void initState() {
     super.initState();
@@ -90,32 +95,32 @@ class _SearchPageState extends State<SearchPage> {
                         padding: EdgeInsets.zero,
                         physics: const NeverScrollableScrollPhysics(),
                         itemBuilder: (context, index) {
-                                int indexTemp = _searchList.length - 1 - index;
-                                Customer customer = customerInitList[indexTemp];
-                                return CustomerItem(
-                                  ontap: () async {
-                                    bool? isRemove = await Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (
-                                          context,
-                                        ) =>
-                                            DetailBillPage(
-                                          customer: _searchList[indexTemp],
-                                          index: indexTemp,
-                                        ),
-                                      ),
-                                    );
-                                    if (isRemove ?? false) {
-                                      widget.listCustomer.remove(customer);
-                                      _searchList.remove(customer);
-                                      _sharedPrefs.addCustomers(widget.listCustomer);
-                                      setState(() {});
-                                    }
-                                  },
-                                  name: _searchList[indexTemp].name,
-                                );
-                              },
+                          Customer customer =
+                              _searchList.reversed.toList()[index];
+                          return CustomerItem(
+                            ontap: () async {
+                              bool? isRemove = await Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (
+                                    context,
+                                  ) =>
+                                      DetailBillPage(
+                                    customer: customer,
+                                  ),
+                                ),
+                              );
+                              if (isRemove ?? false) {
+                                isRemoved = true;
+                                widget.listCustomer.remove(customer);
+                                _searchList.remove(customer);
+                                _sharedPrefs.addCustomers(widget.listCustomer);
+                                setState(() {});
+                              }
+                            },
+                            name: customer.name,
+                          );
+                        },
                       ),
                     ],
                   )
@@ -147,7 +152,7 @@ class _SearchPageState extends State<SearchPage> {
           ],
           onTap: (int indexOfItem) {
             if (indexOfItem == 0) {
-              Navigator.pop(context);
+              Navigator.pop(context, isRemoved);
             }
             if (indexOfItem == 2) {
               showDialog<bool>(
@@ -174,9 +179,13 @@ class _SearchPageState extends State<SearchPage> {
                 if (status == true) {
                   Navigator.pop(context);
                   Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const LoginPage()));
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const LoginPage(),
+                    ),
+                  );
+                  _isLogedList = [Splash(loged: false)];
+                  _sharedPrefsSplash.updateLoged(_isLogedList);
                 }
               });
             }

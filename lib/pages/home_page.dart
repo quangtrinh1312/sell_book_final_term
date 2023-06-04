@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:sell_book_final_term/models/customer.dart';
+import 'package:sell_book_final_term/services/local/shared_prefs_splash.dart';
+import '../models/splash.dart';
 import 'detail_bill.dart';
 import 'login_page.dart';
 import 'search_page.dart';
@@ -23,6 +25,8 @@ class _HomePageState extends State<HomePage> {
   TextEditingController priceController = TextEditingController();
 
   final SharedPrefs _sharedPrefs = SharedPrefs();
+  final SharedPrefsSplash _sharedPrefsSplash = SharedPrefsSplash();
+  List<Splash> _isLogedList = [];
   List<Customer> listCustomer = [];
   bool isVIP = false;
   int currentIndex = 0;
@@ -234,9 +238,9 @@ class _HomePageState extends State<HomePage> {
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                    builder: (context) =>
-                                        StatisticalPage(
-                                          listCustomer: listCustomer,),
+                                    builder: (context) => StatisticalPage(
+                                      listCustomer: listCustomer,
+                                    ),
                                   ),
                                 );
                               },
@@ -311,17 +315,21 @@ class _HomePageState extends State<HomePage> {
               tooltip: "Logout",
             ),
           ],
-          onTap: (int indexOfItem) {
+          onTap: (int indexOfItem) async {
             if (indexOfItem == 0) {
               // Navigate to the Home screen
-            }
-            if (indexOfItem == 1) {
-              Navigator.push(
+            } else if (indexOfItem == 1) {
+              bool? isRemoved = await Navigator.push(
                 context,
                 MaterialPageRoute(
                     builder: (context) =>
                         SearchPage(listCustomer: listCustomer)),
               );
+              if (isRemoved ?? true) {
+                setState(() {
+                  _getCustomer();
+                });
+              }
             } else {
               showDialog<bool>(
                 context: context,
@@ -352,6 +360,8 @@ class _HomePageState extends State<HomePage> {
                         builder: (context) => const LoginPage(),
                       ),
                     );
+                    _isLogedList = [Splash(loged: false)];
+                    _sharedPrefsSplash.updateLoged(_isLogedList);
                   }
                 },
               );

@@ -168,9 +168,13 @@ class _DetailBillPageState extends State<DetailBillPage> {
             ),
             InkWell(
               onTap: (){
-                listCustomer!.removeAt(widget.index!);
-                _sharedPrefs.addCustomers(listCustomer!);
-                Navigator.pop(context, true);
+                if (widget.index != null) {
+                  listCustomer!.removeAt(widget.index!);
+                  _sharedPrefs.addCustomers(listCustomer!);
+                  Navigator.pop(context, true);
+                }else{
+                  Navigator.pop(context, true);
+                }
               },
               child: const Text(
                 'Xóa hóa đơn',

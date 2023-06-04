@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:sell_book_final_term/models/splash.dart';
+import 'package:sell_book_final_term/services/local/shared_prefs_splash.dart';
 import '../components/custom_button.dart';
 import '../pages/sign_up.dart';
 import './home_page.dart';
@@ -19,6 +21,8 @@ class _LoginPageState extends State<LoginPage> {
   String userNameMess = 'Enter username';
   String passWordMess = 'Password';
   final SharedPrefsAccount _sharedPrefsAccount = SharedPrefsAccount();
+  final SharedPrefsSplash _sharedPrefsSplash = SharedPrefsSplash();
+  List<Splash> _isLogedList = [];
   List<Account> _accounts = [];
   @override
   void initState() {
@@ -119,6 +123,13 @@ class _LoginPageState extends State<LoginPage> {
                                   username: usernameController.text,
                                 ));
                         Navigator.pushReplacement(context, route);
+                        _isLogedList = [
+                          Splash(
+                              username: usernameController.text,
+                              loged: true)
+                        ];
+                        _sharedPrefsSplash.updateLoged(_isLogedList);
+                        
                       } else {
                         SnackBar snackBar = const SnackBar(
                           content: Text('Incorrect username or password'),
